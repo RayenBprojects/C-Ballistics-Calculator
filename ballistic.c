@@ -24,6 +24,7 @@ int main()
 
     do
     {
+		printf("\nDEBUGDEBUG\n");
         repeat(&validity);
     } while (validity);
     return 0;

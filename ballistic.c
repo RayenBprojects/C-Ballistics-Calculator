@@ -195,4 +195,5 @@ void repeat(bool *FPvalidity)
 			printf("\x1b[1F"); // goes to start of previous line
 		}
 	} while (validity == false);
+	
 }

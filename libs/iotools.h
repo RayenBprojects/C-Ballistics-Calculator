@@ -1,5 +1,10 @@
-#ifndef HEADER_FILE_IOTOOLS_H
-#include HEADER_FILE_IOTOOLS_H
+#ifndef IOTOOLS.H //HEADER_FILE_IOTOOLS_H
+#define IOTOOLS.H //HEADER_FILE_IOTOOLS_H
+
+#include <iostream>
+#include <iomanip>
+#include <conio.h>
+using namespace std;
 
 
 class DisplayTools{ // Common class for various projects
@@ -31,7 +36,7 @@ void DisplayTools::barTool(float nominator , float denominator , int barLength ,
 		tempLength++;
 	}
 	
-	cout<<'['; display.lineTool(tempLength, '|', false); display.lineTool(barLength - tempLength, '-', false) ; cout<<']';
+	cout<<'['; lineTool(tempLength, '|', false); lineTool(barLength - tempLength, '-', false) ; cout<<']';
 	
 	if (percentDisplay){
 		float tempPercent = (nominator/denominator)*100;

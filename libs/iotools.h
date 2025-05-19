@@ -10,15 +10,8 @@ using namespace std;
 class IoTools{ // Common class for various projects
 	
 	public:
-		
-		void lineTool(int size, char lineChar = '-', bool returnLine = false);
-		
-		void barTool(float nominator = 0 , float denominator = 1 , int barLength = 100 , bool percentDisplay = true, bool returnLine = false);
-		
-		void promptTool(char prompt[500] , char result[500] , char error[500],bool doError = false, bool isNumber = false);
 
-
-		void IoTools::lineTool(int size , char lineChar, bool returnLine){
+		void lineTool(int size, char lineChar = '-', bool returnLine = false){
 			for (int i = 0 ; i < size ; i++){
 				cout<<lineChar;
 			}
@@ -27,7 +20,7 @@ class IoTools{ // Common class for various projects
 			}
 		}
 
-		void IoTools::barTool(float nominator , float denominator , int barLength , bool percentDisplay , bool returnLine){
+		void barTool(float nominator = 0 , float denominator = 1 , int barLength = 100 , bool percentDisplay = true, bool returnLine = false){
 			float tempLengthFloat = (nominator/denominator)*((float)barLength);
 			int tempLength = tempLengthFloat;
 			if (tempLengthFloat - tempLength > 0.5){
@@ -46,7 +39,7 @@ class IoTools{ // Common class for various projects
 			}
 	} 
 
-		void IoTools::promptTool(char prompt[500] , char result[500], char error[500], bool doError , bool isNumber){
+		void promptTool(char prompt[500] , char result[500] , char error[500],bool doError = false, bool isNumber = false){
 
 			if (!doError){
 				bool errorFlag;

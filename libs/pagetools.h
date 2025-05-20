@@ -36,7 +36,7 @@ class PageTools{
             
             for (int i = 0 ; i < arraySize ; i++){
                 do{
-                    char* tempPointer2 = new char[100];
+                    char* tempPointer2 = new char[500];
 
                     if (tempPointer2 == NULL){
                         allocFlag = false;

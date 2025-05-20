@@ -7,10 +7,14 @@ file naming: ballistic.cpp
 
 #include <iostream>
 #include <conio.h>
+#include <windows.h>
 #include "libs\iotools.h"
 #include "libs\pagetools.h"
 using namespace std;
 
+IoTools Io;
+
+// Class definitions
 class Projectile {
     public:
 
@@ -50,7 +54,10 @@ class PageTools2 : public PageTools{
 
             switch (page){
                 case 0:
-                page0();
+                    page0();
+                    break;
+                case 10:
+                    page10();
                     break;
             }
         }
@@ -58,33 +65,69 @@ class PageTools2 : public PageTools{
     private:
         void page0(){
             cout<<"MAIN MENU"<<endl<<endl;
-            cout<<"Data Entry [1]"<<endl;
-            cout<<"Exit       [0]"<<endl;
+            cout<<"Data Entry         [1]"<<endl;
+            cout<<"Trajectory Display [2]"<<endl;
+            cout<<"Exit               [0]"<<endl;
 
+            int falseFlag;
+            do{
+                falseFlag = false;
+
+                char prompt[500] = "-->";
+                char error[500] = "Please choose a presented number";
+                Io.promptTool(prompt, entry[0], error, false, true);
+
+                if (atoi(entry[0]) > 2){
+                    falseFlag = true;
+                    Io.promptTool(prompt, entry[0], error, true, true);
+                }
+            } while (falseFlag);
+        }
+
+        void page10(){
+            cout<<"DATA ENTRY"<<endl<<endl;
+            system("pause"); // CONTINUE HERE
         }
 
 
 };
 
+// Function prototypes
+void menuProcess(char input[500], short* menuState, bool* endFlag);
 
 int main(){
     PageTools2 Display(5);
 
     bool endFlag;
-    short menuState = 0;
+    short menuState = 00; // 00 for menu, 1X for the first layer of pages, 2X for the second...
 
     do{
 
-        Display.pageSelect(0);
+        Display.pageSelect(menuState);
 
-        fflush(stdin);
-        while(!kbhit){}
-        getch();
-        endFlag = true;
+        switch(menuState){
+            case 0:
+                menuProcess(Display.entry[0], &menuState, &endFlag);
+                break;
+            case 10:
+                break;
+        }
 
     }while(endFlag == false);
 
     return 0;
 }
 
-
+void menuProcess(char input[500], short* menuState, bool* endFlag){
+    switch (atoi(input)){
+        case 0:
+            *endFlag = true;
+            break;
+        case 1:
+            *menuState = 10;
+            break;
+        case 2:
+            *menuState = 11;
+            break;
+    }
+}

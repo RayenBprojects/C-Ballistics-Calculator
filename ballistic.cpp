@@ -5,33 +5,62 @@ Description: This program is a ballistics calculator
 file naming: ballistic.cpp
 */
 
+/* PENDING TASKS
+    GOAL: create version 1.0 (calculations without friction, wall, or angle)
+    next up: redo unit display in the data page
+
+    AFTER 1.0:
+    Add rest of prompts in page20(), PageTools2 class
+    Add Negative and float number functionality to iotools.h library (promptTool method)
+*/
+
 #include <iostream>
 #include <conio.h>
 #include <windows.h>
 #include "libs\iotools.h"
+IoTools Io;
 #include "libs\pagetools.h"
 using namespace std;
 
-IoTools Io;
+// Constants
+const short entryAlloc = 6;
 
 // Class definitions
 class Projectile {
     public:
 
-        float x0;
-        float y0; 
+        float speed;
+        float angle;
+        float height;
 
-        float yFloor;
         float xWall;
+        float angleGround;
 
-        float crossSection;
+        float xSection; // as in cross section, unrelated to x
         float fCoef;
-        bool friction;
+        
+        bool aeroDelete;
+        bool wallDelete;
+        bool angleDelete;
 
         bool initialized;
 
         Projectile(){
             initialized = false;
+
+            speed = 0;
+            angle = 0;
+            height = 0;
+
+            xWall = 0;
+            angleGround = 0;
+
+            xSection = 0;
+            fCoef = 0;
+
+            aeroDelete = true;
+            wallDelete = true;
+            angleDelete = true;
         }
 
     private:
@@ -40,6 +69,7 @@ class Projectile {
         float yCoord(int time);
 
 };
+Projectile Ballistic;
 
 class PageTools2 : public PageTools{
     public:
@@ -59,15 +89,25 @@ class PageTools2 : public PageTools{
                 case 10:
                     page10();
                     break;
+                case 11:
+                    page11();
+                    break;
+                
             }
         }
 
     private:
         void page0(){
             cout<<"MAIN MENU"<<endl<<endl;
-            cout<<"Data Entry         [1]"<<endl;
-            cout<<"Trajectory Display [2]"<<endl;
-            cout<<"Exit               [0]"<<endl;
+            cout<<"Settings                    [1]"<<endl;
+            cout<<"Data entry                  [2]"<<endl;
+            if (Ballistic.initialized){
+                cout<<"Trajectory Display          [-]"<<endl;
+            }
+            else{
+                cout<<"Trajectory Display (NO DATA)[-]"<<endl;
+            }
+            cout<<"Exit                        [0]"<<endl;
 
             int falseFlag;
             do{
@@ -85,21 +125,100 @@ class PageTools2 : public PageTools{
         }
 
         void page10(){
-            cout<<"DATA ENTRY"<<endl<<endl;
-            system("pause"); // CONTINUE HERE
+            bool falseFlag;
+            char prompt[3][500] = {
+                "Ignore air friction [Y/N] : ",
+                "Remove wall         [Y/N] : ",
+                "Angled ground       [Y/N] : "
+            };
+            char error[500] = "Please enter 'Y' or 'N'";
+
+            cout<<"Settings"<<endl<<endl;
+
+            for(int i = 0 ; i < 3 ; i++){
+                cout<<prompt[i]<<endl<<endl;
+            }
+            for (int i = 0 ; i < 6 ; i++){
+                cout<<"\x1b[A";
+            }
+
+            
+            for (int i = 0 ; i < 3 ; i++){
+                do{
+                    falseFlag = false;
+                    Io.promptTool(prompt[i],entry[i],error,false,false);
+                    if (( tolower(entry[i][0]) != 'n' && tolower(entry[i][0]) != 'y') || ( entry[i][1] != '\0' ) ){
+                        falseFlag = true;
+                        Io.promptTool(prompt[i],entry[i],error,true,false);
+                    }
+                }while (falseFlag);
+                cout<<endl;
+            }
         }
 
+        void page11(){
+            bool falseFlag;
+            short lineCount = 6;
+            char prompt[7][500] = { "Launch velocity     (m/s): ",
+                                    "Launch angle    (degrees): ",
+                                    "Launch height         (m): ",
+                                    "Aero cross section  (m^2): ",
+                                    "Aero friction coef       : ",
+                                    "Distance from wall    (m): ",
+                                    "Ground Angle    (degrees): "};
 
+            char error[500] = "Please enter valid data";
+            
+            cout<<"DATA ENTRY"<<endl<<endl;
+
+            for(int i = 0 ; i < 3 ; i++){
+                cout<<prompt[i]<<endl<<endl;
+            }
+            if(!Ballistic.aeroDelete){
+                for (int i = 3 ; i < 5 ; i++){
+                    cout<<prompt[i]<<endl<<endl;
+                }
+                lineCount += 4;
+            }
+            if(!Ballistic.wallDelete){
+                cout<<prompt[5]<<endl<<endl;
+                lineCount += 2;
+            }
+            if(!Ballistic.angleDelete){
+                cout<<prompt[6]<<endl;
+                lineCount += 1;
+            }
+            for (int i = 0 ; i < lineCount ; i++){
+                cout<<"\x1b[A";
+            }
+
+            for(int i = 0 ; i < 3 ; i++){
+                do{
+                    falseFlag =false;
+                    Io.promptTool(prompt[i], entry[i], error, false, true);
+                } while(falseFlag);
+                cout<<endl;
+            }
+        }
 };
 
 // Function prototypes
 void menuProcess(char input[500], short* menuState, bool* endFlag);
+void settingProcess(short* menuState, char* entry[entryAlloc]);
+void dataProcess(short* menuState, char* entry[entryAlloc]);
 
 int main(){
-    PageTools2 Display(5);
+    PageTools2 Display(entryAlloc);
 
     bool endFlag;
-    short menuState = 00; // 00 for menu, 1X for the first layer of pages, 2X for the second...
+    short menuState = 00;
+    /* PAGE INDEX - Wanted to make nested pages but it would've just been bad ui
+    * 0 for menu
+    * 10 for settings page
+    * 11 for data entry page
+    * 12 for trajectory display page
+    */
+
 
     do{
 
@@ -110,6 +229,10 @@ int main(){
                 menuProcess(Display.entry[0], &menuState, &endFlag);
                 break;
             case 10:
+                settingProcess(&menuState, Display.entry);
+                break;
+            case 11:
+                dataProcess(&menuState, Display.entry);
                 break;
         }
 
@@ -129,5 +252,41 @@ void menuProcess(char input[500], short* menuState, bool* endFlag){
         case 2:
             *menuState = 11;
             break;
+        case 3:
+            *menuState = 12;
+            break;
     }
+}
+
+void settingProcess(short* menuState, char* entry[entryAlloc]){
+
+    bool choice[3]; // 0 for aerodelete, 1 for walldelete, 2 for angledelete
+
+    for (int i = 0; i < 3; i++){
+        switch (tolower(entry[i][0])){
+            case 121: // ASCII for 'y'
+                choice[i] = true;
+                break;
+            case 110: // ASCII for 'n'
+                choice[i] = false;
+                break;
+        }
+    }
+
+    Ballistic.aeroDelete = choice[0];
+    Ballistic.wallDelete = choice[1];
+    Ballistic.angleDelete = choice[2];
+
+    *menuState = 0;
+
+}
+
+void dataProcess(short* menuState, char* entry[entryAlloc]){
+    Ballistic.initialized = true;
+
+    Ballistic.speed = atoi(entry[0]);
+    Ballistic.angle = atoi(entry[1]);
+    Ballistic.height = atoi(entry[2]);
+
+    *menuState = 0;
 }

@@ -1,6 +1,6 @@
 # C++ Ballistics Calculator
 
-This is a tool to display the motion characteristics of a projectile. The user feeds the program data such as launch velocity, angle, height, etc, and the program takes it from there.
+This is a tool to display the motion characteristics of a projectile. The user feeds the program data such as launch velocity, angle, height, etc, and the program takes it from there. It utilizes an application of calculus paired with manipulation of the Windows Command Prompt's UI to process and display the calculations.
 
 As of now, the program is in a basic form and will output an arbitrary graph of projectile motion on a flat surface without air resistance. Many more features are to come.
 

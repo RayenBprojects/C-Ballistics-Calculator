@@ -192,7 +192,7 @@ class PageTools2 : public PageTools{
 
         void page11(){
             bool falseFlag;
-            short lineCount = 6;
+            short lineCount = 4;
             char prompt[8][30] = { "Launch velocity     (m/s): ",
                                     "Launch angle          (o): ",
                                     "Launch height         (m): ",
@@ -206,14 +206,14 @@ class PageTools2 : public PageTools{
             
             cout<<"DATA ENTRY"<<endl<<endl;
 
-            for(int i = 0 ; i < 4 ; i++){
+            for(int i = 0 ; i < 3 ; i++){
                 cout<<prompt[i]<<endl<<endl;
             }
             if(!Ballistic.aeroDelete){
-                for (int i = 4 ; i < 6 ; i++){
+                for (int i = 3 ; i < 6 ; i++){
                     cout<<prompt[i]<<endl<<endl;
                 }
-                lineCount += 4;
+                lineCount += 6;
             }
             if(!Ballistic.wallDelete){
                 cout<<prompt[6]<<endl<<endl;
@@ -227,7 +227,7 @@ class PageTools2 : public PageTools{
                 cout<<"\x1b[A";
             }
 
-            for(int i = 0 ; i < 4 ; i++){
+            for(int i = 0 ; i < 3 ; i++){
                 do{
                     falseFlag =false;
                     Io.promptTool(prompt[i], entry[i], error, false, true);
@@ -350,7 +350,7 @@ void dataProcess(short* menuState, char* entry[entryAlloc]){
     Ballistic.speed = atoi(entry[0]);
     Ballistic.angle = atoi(entry[1]);
     Ballistic.height = atoi(entry[2]);
-    Ballistic.mass = atoi(entry[3]);
+    //Ballistic.mass = atoi(entry[3]);
 
     *menuState = 0;
 }

@@ -249,6 +249,7 @@ class PageTools2 : public PageTools{
                 char name2[] = "Y-axis";
                 float xMinMax[] = {0,max};
                 float yMinMax[] = {0,max};
+                
 
                 Io.graphTool(name1, name2, xMinMax, yMinMax, 100, Ballistic.points);
             }

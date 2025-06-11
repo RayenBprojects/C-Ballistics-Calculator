@@ -243,10 +243,12 @@ class PageTools2 : public PageTools{
 
                 cout<<"TRAJECTORY"<<endl<<endl;
 
+                float max = (Ballistic.xf >= Ballistic.yMax) ? Ballistic.xf : Ballistic.yMax;
+
                 char name1[] = "X-axis";
                 char name2[] = "Y-axis";
-                float xMinMax[] = {0,Ballistic.xf};
-                float yMinMax[] = {0,Ballistic.yMax};
+                float xMinMax[] = {0,max};
+                float yMinMax[] = {0,max};
 
                 Io.graphTool(name1, name2, xMinMax, yMinMax, 100, Ballistic.points);
             }
